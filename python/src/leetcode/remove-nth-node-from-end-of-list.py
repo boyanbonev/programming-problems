@@ -10,7 +10,7 @@ class ListNode:
 
 class Solution:
     def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
-        first: ListNode = head
+        first: ListNode | None = head
         cnt: int = 0
         # we want to stop before the needed element so that we can skip it. There for we must do up to n - 1 steps: n - 1 > 0
         while first != None and cnt < n:
@@ -35,7 +35,7 @@ class Solution:
         return head
 
 
-    def add(self, head: Optional[ListNode], value):
+    def add(self, head: Optional[ListNode], value) -> Optional[ListNode]:
         # empty list
         if not head:
             return ListNode(val = value)
@@ -45,6 +45,8 @@ class Solution:
             current = current.next
 
         current.next = ListNode(val = value)
+
+        return head
 
 
     def to_str(self, head: Optional[ListNode]):
@@ -60,7 +62,7 @@ if __name__ == "__main__":
 
     def test(head: Optional[ListNode], n, expected_result: str):
         print(f"head = {s.to_str(head)}, n = {n}")
-        result: int = s.removeNthFromEnd(head, n)
+        result: Optional[ListNode] = s.removeNthFromEnd(head, n)
         print(f"expected_result = {str(expected_result)}")
         result_str = s.to_str(result)
         print(f"result = {result_str}")
@@ -70,7 +72,7 @@ if __name__ == "__main__":
 
 
     #### TEST 1 ####
-    head: ListNode = s.add(None, 1)
+    head: ListNode| None = s.add(None, 1)
     test(head, 1, "[]")
 
     # #### TEST 2 ####
