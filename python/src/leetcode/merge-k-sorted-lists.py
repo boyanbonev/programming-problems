@@ -11,31 +11,24 @@ class ListNode:
 
 class Solution:
 
-    def add_el_to_list(self, list: Optional[ListNode], val) -> Optional[ListNode]:
-        if not list:
-            return ListNode(val)
-        current = list
-        while current.next != None:
-            current = current.next
-        current.next = ListNode(val)
-
-        return list
-
     def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
+        # do not modify the original list
         tmp_lists: list[Optional[ListNode]] = []
-        for l in lists:
-            tmp_lists.append(l)
+        tmp_lists.extend(lists)
 
         heap: list = []
-        # process elements till there are elements left in the lists of lists
         result: Optional[ListNode] = None
+        # keep a pointer to the last element instead of traversing the list every time a new element is added
+        last_el_pointer: Optional[ListNode] = None
+
+        # process elements till there are elements left in the lists of lists
         while True:
             should_break: bool = True
             for i in range(0, len(tmp_lists)):
                 head: ListNode = tmp_lists[i]
 
                 if head != None:
-                    # the processing continues as till there is a with at least 1 element
+                    # the processing continues as till there is at least 1 element
                     should_break = False
 
                     # get the value and push it in the heap
@@ -49,13 +42,30 @@ class Solution:
                 break
 
         while (len(heap)>0):
-            result = self.add_el_to_list(result, heapq.heappop(heap))
+            # always take the smallest element
+            value = heapq.heappop(heap)
+            if not result:
+                result = ListNode(value)
+                last_el_pointer = result
+            else:
+                last_el_pointer.next = ListNode(value)
+                last_el_pointer = last_el_pointer.next
 
         return result
 
 
 if __name__ == "__main__":
     s = Solution()
+
+    def add_el_to_list(list: Optional[ListNode], val) -> Optional[ListNode]:
+        if not list:
+            return ListNode(val)
+        current = list
+        while current.next != None:
+            current = current.next
+        current.next = ListNode(val)
+
+        return list
 
     def to_regular_list(l: ListNode) -> list:
         tmp = l
@@ -71,9 +81,10 @@ if __name__ == "__main__":
         for l in input:
             ll: Optional[ListNode] = None
             for el in l:
-                ll = s.add_el_to_list(ll, el)
+                ll = add_el_to_list(ll, el)
             ll_input.append(ll)
 
+        print("---------------------------------------------------")
         print(f"Input: {input}")
 
         result = s.mergeKLists(ll_input)
